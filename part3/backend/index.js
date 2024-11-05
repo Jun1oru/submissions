@@ -12,6 +12,7 @@ const requestLogger = (request, response, next) => {
 };
 app.use(requestLogger);
 app.use(cors());
+app.use(express.static('dist'));
 
 let notes = [
   {
@@ -56,6 +57,14 @@ app.delete('/api/notes/:id', (request, response) => {
   notes = notes.filter((note) => note.id !== id);
 
   response.status(204).end();
+});
+
+app.put('/api/notes/:id', (request, response) => {
+  const id = request.params.id;
+  const updatedNote = request.body;
+  notes = notes.map((note) => (note.id === id ? updatedNote : note));
+
+  response.json(updatedNote);
 });
 
 const generateId = () => {
